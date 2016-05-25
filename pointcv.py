@@ -4,10 +4,10 @@ import numpy as np
 import cv2
 
 # Image size
-x = 600
-y = 600
+x = 1000
+y = 1000
 # Iterations of Flips
-n = 40000
+n = 1000000
 
 # Initial configutations
 
@@ -15,17 +15,25 @@ n = 40000
 # pts = [(random.randint(0, 5), random.randint(0,5)) for i in range(3)] 
 
 # 4 pt configurations
-pts = [(random.randint(0, 5), random.randint(0,5)) for i in range(4)] 
+# pts = [(random.randint(0, 5), random.randint(0,5)) for i in range(4)] 
+
+# What! 6 point configs are bizarre!
+pts = [(random.randint(0, 10), random.randint(0,10)) for i in range(6)] 
+
+print pts
 
 def scalepoly(pts, x, y):
     ''' scale and shift poly to fit img '''
     midx, midy = x/2, y/2
     maxx, maxy = map(lambda l: max(l), zip(*pts))
-    scalex, scaley = .5*(x/(2*maxx)), .5*(y/(2*maxy))
+    minx, miny = map(lambda l: min(l), zip(*pts))
+    width = maxx - minx
+    height = maxy - miny
+    scalex, scaley = .25*(x/(2*(width+.01))), .25*(y/(2*(height+.01)))
     #scale
     scaled = [(scalex*x, scaley*y) for (x,y) in pts]
     #shift
-    shifted = [(x+midx, y+midy) for (x,y) in scaled]
+    shifted = [(x+midx-.5*width, y+midy-.5*height) for (x,y) in scaled]
     return shifted
 
 def drawpts(pts):
